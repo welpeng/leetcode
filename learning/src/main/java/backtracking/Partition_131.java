@@ -79,7 +79,7 @@ public class Partition_131 {
 
     public static void main(String[] args) {
         Partition_131 partition_131 = new Partition_131();
-        List<List<String>> aab = partition_131.partition("aab");
+        List<List<String>> aab = partition_131.partition("aabbcc");
         System.out.println(aab);
     }
 }
