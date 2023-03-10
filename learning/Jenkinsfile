@@ -1,0 +1,74 @@
+
+    //git凭证ID
+    def git_auth = "b31f3f5a-15ed-4146-a991-7e1f7f22d007"
+    //git的url地址
+    def git_url = "git@192.168.101.221:iot/yelink-iot.git"
+    def git_web_url = "git@192.168.101.221:iot/yelink-iot-web.git"
+    def git_deploy_url = "git@192.168.101.221:deploy/yelink-iot.git"
+
+    //镜像的版本号
+    def tag = "3.18.4"
+    def web_branch = "master"
+    def branch = "master"
+
+
+    node {
+           stage('部署包拉取') {
+                checkout([$class: 'GitSCM', branches: [[name: "*/${deploy_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: "${git_auth}", url: "${git_deploy_url}"]]])
+           }
+
+           stage('前端代码拉取') {
+                //在一个pipeline下，拉取多个git项目，必须给每一个项目建立文件夹进行存放
+                sh "mkdir -p ./web"
+                // pipeline语法下切换当前目录，注：不能使用cd命令进行切换，每次执行新的shell命令时会被重置
+                dir('./web') {
+                     checkout([$class: 'GitSCM', branches: [[name: "*/${web_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: "${git_auth}", url: "${git_web_url}"]]])
+                }
+           }
+
+           stage('拉取后端代码') {
+                             //在一个pipeline下，拉取多个git项目，必须给每一个项目建立文件夹进行存放
+                             sh "mkdir -p ./server"
+                             // pipeline语法下切换当前目录，注：不能使用cd命令进行切换，每次执行新的shell命令时会被重置
+                             dir('./server') {
+                                  checkout([$class: 'GitSCM', branches: [[name: "*/${branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: "${git_auth}", url: "${git_url}"]]])
+                             }
+           }
+           stage('前端构建') {
+                        dir('./web') {
+                            sh "npm install"
+                            sh "npm run build"
+                        }
+            }
+            stage('后端构建') {
+                            // 将vue项目build后的文件移动到java的resource目录下
+                            sh "cp -rf web/dist  server"
+                            dir('./server') {
+                                sh "mvn clean package -DskipTest"
+                            }
+            }
+
+
+//        stage('编译，打包微服务工程，上传镜像') {
+//            //登录到镜像仓库
+//            sh "docker login -u cn-south-1@TQ0BQOAML1V5Y5HZ9ISP -p c6ec8441a31e8779899f060ee4a9146969b81f439ef5664cd2f5b3bd81cba962 swr.cn-south-1.myhuaweicloud.com"
+//            sh "docker login -u cn-south-2@TQ0BQOAML1V5Y5HZ9ISP -p c6ec8441a31e8779899f060ee4a9146969b81f439ef5664cd2f5b3bd81cba962 swr.cn-south-2.myhuaweicloud.com"
+//            for(int i=0;i<selectedProjectNames.length;i++){
+//                      def currentProjectName = selectedProjectNames[i];
+//                      def splitProject = selectedProjectNames[i].split("/")
+//                      def projectName = splitProject[splitProject.length - 1]
+//                      sh "mvn -f ${currentProjectName} dockerfile:build"
+//                      //定义镜像名称
+//                      def imageName = "${projectName}:${tag}"
+//                      //对镜像打上标签
+//                      sh "docker tag ${projectName}:latest ${harbor_url}/${harbor_project}/${imageName}"
+//                      sh "docker push ${harbor_url}/${harbor_project}/${imageName}"
+//                      sh "echo 镜像上传成功"
+//                      //删除本地镜像
+//                      sh "docker rmi -f ${projectName}:latest"
+//                      sh "docker rmi -f ${harbor_url}/${harbor_project}/${imageName}"
+//             }
+//        }
+
+    }
+

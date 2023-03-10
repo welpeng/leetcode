@@ -1,6 +1,7 @@
 package treenode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,9 +53,33 @@ public class ConstructMaximumBinaryTree_654 {
     public static void main(String[] args) {
         ConstructMaximumBinaryTree_654 constructMaximumBinaryTree_654 = new ConstructMaximumBinaryTree_654();
         int[] nums = {3, 2, 1};
-        TreeNode treeNode = constructMaximumBinaryTree_654.constructMaximumBinaryTree(nums);
+        TreeNode treeNode = constructMaximumBinaryTree_654.constructMaximumBinaryTree2(nums);
         System.out.println(treeNode);
     }
+
+
+    public TreeNode constructMaximumBinaryTree2(int[] nums) {
+        if (nums.length == 0) {
+            return null;
+        }
+
+        int max = -1;
+        int index = 0;
+        for (int a = 0; a < nums.length; a++) {
+            if (max < nums[a]) {
+                max = nums[a];
+                index = a;
+            }
+        }
+
+        int[] left = Arrays.copyOfRange(nums, 0, index);
+        TreeNode leftNode = constructMaximumBinaryTree(left);
+        int[] right = Arrays.copyOfRange(nums, index + 1, nums.length);
+        TreeNode rightNode = constructMaximumBinaryTree(right);
+        TreeNode root = new TreeNode(max, leftNode, rightNode);
+        return root;
+    }
+
 
     public TreeNode constructMaximumBinaryTree(int[] nums) {
         List<Integer> list = new ArrayList<>();

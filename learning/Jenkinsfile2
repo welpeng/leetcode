@@ -1,0 +1,27 @@
+
+    //git凭证ID
+    def git_auth = "b31f3f5a-15ed-4146-a991-7e1f7f22d007"
+    //git的url地址
+    def git_url = "git@192.168.101.221:iot/yelink-iot.git"
+    def git_web_url = "git@192.168.101.221:iot/yelink-iot-web.git"
+
+    //镜像的版本号
+    def tag = "3.18.4"
+    def web_branch = "master"
+    def branch = "master"
+
+
+    node {
+       stage('前端代码拉取') {
+            //在一个pipeline下，拉取多个git项目，必须给每一个项目建立文件夹进行存放
+            sh "mkdir -p ./web"
+            sh "mkdir -p ./test22"H
+            sh "mkdir -p ./test44"
+            sh "rm -rf test44"
+
+       }
+
+
+
+    }
+

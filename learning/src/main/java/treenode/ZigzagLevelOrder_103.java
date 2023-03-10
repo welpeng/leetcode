@@ -8,10 +8,10 @@ import java.util.*;
  * 例如：
  * 给定二叉树 [3,9,20,null,null,15,7],
  * <p>
- * 3
+ *  3
  * / \
  * 9  20
- * /  \
+ *   /  \
  * 15   7
  * 返回锯齿形层序遍历如下：
  * <p>
@@ -35,6 +35,26 @@ public class ZigzagLevelOrder_103 {
         List<List<Integer>> lists = zigzagLevelOrder_103.zigzagLevelOrder(treeNode);
         System.out.println(lists);
     }
+/*
+
+    public List<List<Integer>> zigzagLevelOrder2(TreeNode root) {
+
+
+    }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         List<List<Integer>> res = new ArrayList<>();

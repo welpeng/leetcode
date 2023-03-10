@@ -3,9 +3,10 @@ package linkedlist;
 import linkedlist.base.ListNode;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
- * 给定一个链表，删除链表的倒数第 n 个节点，并且返回链表的头结点。
+ * 给定一个链表，删除链表的倒数第n个节点，并且返回链表的头结点。
  * <p>
  * 示例：
  * <p>
@@ -14,7 +15,7 @@ import java.util.HashMap;
  * 当删除了倒数第二个节点后，链表变为 1->2->3->5.
  * 说明：
  * <p>
- * 给定的 n 保证是有效的。
+ * 给定的 n保证是有效的。
  * <p>
  * 进阶：
  * <p>
@@ -40,54 +41,32 @@ public class RemoveNthFromEnd_19 {
         listNode2.next = listNode3;
         listNode.next = listNode2;
 
-        ListNode listNode1 = removeNthFromEnd(listNode, 2);
+        ListNode listNode1 = removeNthFromEnd22(listNode, 2);
         System.out.println(listNode1);
     }
 
-    public static ListNode removeNthFromEnd(ListNode head, int n) {
-
-        ListNode pre = null;
-        ListNode cur = head;
-
-        HashMap<Integer, Integer> map = new HashMap<>();
-        int size = 0;
-        while (null != head) {
-            map.put(size, head.val);
-            size++;
+    public static ListNode removeNthFromEnd22(ListNode head, int n) {
+        Map<Integer, ListNode> map = new HashMap<>();
+        int a = 0;
+        while (head != null) {
+            a++;
+            map.put(a, head);
             head = head.next;
         }
 
-        int a = size - n;
-
-        ListNode listNode = new ListNode(0);
-
-        for (int i = 0; i < size; i++) {
-            if (i != a) {
-                insertNode(map.get(i), listNode);
-            }
+        int index = a - n;
+        if (index < 1) {
+            return new ListNode();
         }
 
-        return listNode.next;
+
+        ListNode res = map.get(index);
+        res.next = map.get(index + 2);
+        return map.get(1);
     }
 
-    public static ListNode insertNode(int data, ListNode head) {
-        ListNode listNode = new ListNode(data);
-        if (null == head) {
-            head = listNode;
-            return listNode;
-        }
-        System.out.println(head);
-        ListNode cur = head;
-        System.out.println(cur);
-        while (cur.next != null) {
-            cur = cur.next;
-        }
 
-        cur.next = listNode;
-        return head;
-    }
-
-    public static ListNode removeNthFromEnd2(ListNode head, int n) {
+    public static ListNode removeNthFromEnd(ListNode head, int n) {
         ListNode dummy = new ListNode(0);
         dummy.next = head;
         ListNode first = dummy;
